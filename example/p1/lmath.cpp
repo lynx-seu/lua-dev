@@ -12,14 +12,14 @@ static int lsin(lua_State *L) {
     return 1;
 }
 
+extern "C"
 int luaopen_math2(lua_State *L) {
-    static const struct luaL_reg mathlib[] = {
+    static const luaL_Reg mathlib[2] = {
         {"sin", lsin},
         {NULL, NULL},
     };
 
-    lua_newtable(L);
-    luaL_setfuncs(L, mathlib, 0);
+    luaL_newlib(L, mathlib);
     return 1;
 }
 
