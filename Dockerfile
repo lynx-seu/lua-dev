@@ -7,6 +7,7 @@ RUN set -ex                                     \
     && apk update && apk upgrade                \
     && apk add --no-cache --virtual .build-deps \
         gcc                                     \
+        g++                                     \
         make                                    \
         linux-headers                           \
         readline-dev                            \

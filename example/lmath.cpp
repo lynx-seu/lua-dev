@@ -16,7 +16,7 @@ int luaopen_math2(lua_State *L) {
     static const struct luaL_reg mathlib[] = {
         {"sin", lsin},
         {NULL, NULL},
-    }
+    };
 
     lua_newtable(L);
     luaL_setfuncs(L, mathlib, 0);
