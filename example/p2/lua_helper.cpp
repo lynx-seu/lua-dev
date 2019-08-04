@@ -1,4 +1,6 @@
 
+// 参考[为 Lua 绑定 C/C++ 对象](https://blog.codingnow.com/2013/01/binding_c_object_for_lua.html)
+
 extern "C" {
 #   include "lua.h"
 #   include "lualib.h"

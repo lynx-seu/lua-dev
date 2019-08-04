@@ -1,4 +1,8 @@
 
+// 参考
+// 1. [PIL]
+// 2. [绑定一个简单的C++类](http://4gamers.cn/blog/2014-08-11-bind-a-simple-cpp-class-in-lua.html)
+
 extern "C" {
 #   include "lua.h"
 #   include "lualib.h"
