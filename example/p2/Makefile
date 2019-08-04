@@ -6,6 +6,9 @@ src_o=$(src_list:.cpp=.o)
 CFLAGS=-std=c++11
 LDFLAGS=-llua
 
+all:$(proj)
+	lua test.lua
+
 $(proj):$(src_o)
 	g++ $(CFLAGS) -fPIC --shared $^ -o $@ $(LDFLAGS)
 

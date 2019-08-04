@@ -50,6 +50,14 @@ void *luax_toobject(lua_State *L, int index) {
     return *ud;
 }
 
+void *luax_checkobject(lua_State *L, int index, const char *tname) {
+    void **ud = (void **)luaL_checkudata(L, index, tname);
+    if (ud == NULL) {
+        return NULL;
+    }
+    return *ud;
+}
+
 void luax_deleteobject(lua_State *L,  void *obj) {
     luaL_getmetatable(L, kMetaTable);
     if (lua_istable(L, -1)) {
@@ -93,5 +101,4 @@ void luax_dump(lua_State *L) {
     }
     printf("\n");
 }
-
 
