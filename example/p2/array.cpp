@@ -9,6 +9,7 @@ extern "C" {
 #   include "lauxlib.h"
 }
 
+#include <iostream>
 #include <vector>
 #include "lua_helper.h"
 
@@ -30,6 +31,7 @@ static int lnewarray(lua_State *L) {
 
 static int ldeletearray(lua_State *L) {
     auto vd = (Array *)luax_checkobject(L, 1, kArrayName);
+    std::cout << "array dtor !!!" << std::endl;
     luaL_argcheck(L, vd != NULL, 1, "`array' excepted");
     delete vd;
     return 0;
@@ -77,6 +79,7 @@ int luaopen_array(lua_State *L) {
         {"set", lsetarray},
         {"get", lgetarray},
         {"size", lgetsize},
+        {"__gc", ldeletearray},
         {NULL, NULL},
     };
 

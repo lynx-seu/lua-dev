@@ -7,3 +7,8 @@ a:set(1, 5)
 assert(a:get(1) == 5 and a:size() == 10)
 print(a:get(1), a:size())
 
+print("before dtor...")
+a = nil
+collectgarbage()
+print("after dtor...")
+
