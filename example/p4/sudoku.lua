@@ -90,7 +90,9 @@ end
 
 local start = os.time()
 local result
-result = dlx_matrix:dance()
+for i = 1, 10000 do
+    result = dlx_matrix:dance()
+end
 print(os.difftime(os.time(),start))
 
 assert(#result == 1 and #(result[1]) == 81)

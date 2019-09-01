@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <functional>
 #include <climits>
-#include <vector>
+#include <algorithm>
 
 namespace lynx94 {
 
@@ -33,7 +33,7 @@ struct data_object { //A module in the sparse matrix data structure.
 
 
 // buf:  the matrix in row major order.
-data_object *sparse_matrix_create(int8_t *buf, int rows, int cols) {
+data_object *sparse_matrix_create(bool *buf, int rows, int cols) {
     //step 1: construct the linked-list structure.
     //We can do this by iterating through the rows and columns. Time is
     //linear in the number of entries (optimal).
@@ -173,23 +173,24 @@ void dlx_search(data_object *root, int depth, int *result, const FUNC& f) {
     uncover(column);
 }
 
-void dlx_dance(int8_t *buf, int rows, int cols, const FUNC& f) {
-    data_object *root = sparse_matrix_create(buf, rows, cols);
-    int *result = new int[rows];
-    dlx_search(root, 0, result, f);
-    delete []result;
-    sparse_matrix_release(root);
-}
-
 } // anonymous namespace
 
 struct dlx_matrix {
     dlx_matrix(int r, int c)
-        : data(r * c,  0), rows(r), cols(c) {}
+        :data(nullptr), rows(r), cols(c) {
+        data = new bool[r*c];
+        std::fill(data, data+r*c, false);
+    }
 
-    std::vector<int8_t> data;
+    ~dlx_matrix() {
+        if (data != nullptr) {
+            delete []data;
+        }
+    }
+
     int rows;
     int cols;
+    bool *data;
 };
 
 dlx_matrix *dlx_matrix_create(int rows, int cols) {
@@ -202,7 +203,7 @@ void dlx_matrix_release(dlx_matrix *mat) {
         delete mat;
     }
 }
-void dlx_matrix_set(dlx_matrix *mat, int r, int c, int v) {
+void dlx_matrix_set(dlx_matrix *mat, int r, int c, bool v) {
     assert(r >= 0 && r < mat->rows);
     assert(c >= 0 && c < mat->cols);
 
@@ -210,17 +211,21 @@ void dlx_matrix_set(dlx_matrix *mat, int r, int c, int v) {
     mat->data[r*mat->cols + c] = v;
 }
 
-int dlx_matrix_get(dlx_matrix *mat, int r, int c) {
+bool dlx_matrix_get(dlx_matrix *mat, int r, int c) {
     assert(r >= 0 && r < mat->rows);
     assert(c >= 0 && c < mat->cols);
-    return (int)(mat->data[r*mat->cols + c]);
+    return mat->data[r*mat->cols + c];
 }
 
 void dlx_matrix_dance(dlx_matrix *mat, const FUNC& f) {
-    int8_t *p = &*(mat->data.begin());
-    int r = mat->rows;
-    int c = mat->cols;
-    dlx_dance(p, r, c, f);
+    assert(mat != nullptr);
+    int rows = mat->rows;
+    int cols = mat->cols;
+    data_object *root = sparse_matrix_create(mat->data, rows, cols);
+    int *result = new int[rows];
+    dlx_search(root, 0, result, f);
+    delete []result;
+    sparse_matrix_release(root);
 }
 
 

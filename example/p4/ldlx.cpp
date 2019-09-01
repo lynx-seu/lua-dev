@@ -39,7 +39,7 @@ static int lset(lua_State *L) {
     int row = luaL_checkinteger(L, 2)-1;
     int col = luaL_checkinteger(L, 3)-1;
     int val = luaL_checkinteger(L, 4);
-    lynx94::dlx_matrix_set(vd, row, col, val);
+    lynx94::dlx_matrix_set(vd, row, col, val != 0);
     return 0;
 }
 
@@ -48,8 +48,8 @@ static int lget(lua_State *L) {
     luaL_argcheck(L, vd != NULL, 1, "`dlx_matrix' excepted");
     int row = luaL_checkinteger(L, 2)-1;
     int col = luaL_checkinteger(L, 3)-1;
-    int val = lynx94::dlx_matrix_get(vd, row, col);
-    lua_pushinteger(L, val);
+    bool val = lynx94::dlx_matrix_get(vd, row, col);
+    lua_pushinteger(L, val ? 1 : 0);
     return 1;
 }
 

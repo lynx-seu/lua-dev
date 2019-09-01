@@ -14,6 +14,11 @@ end
 local assert = assert
 local dlx = require "dlx"
 
+--[[
+1 0 0
+1 0 1
+0 1 1
+]]
 local a = dlx.new(4, 3)
 --a:addrow(1, {1, 0, 0})
 --a:addrow(2, {1, 0, 1})
@@ -31,6 +36,14 @@ for _, v in ipairs(result) do
 end
 
 ----Problem: hustoj 1017
+--[[
+1 0 0 1 0 0 1
+1 0 0 1 0 0 0
+0 0 0 1 1 0 1
+0 0 1 0 1 1 0
+0 1 1 0 0 1 1
+0 1 0 0 0 0 1
+]]
 local b = dlx.new(6, 7)
 b:set(1, 1, 1)
 b:set(1, 4, 1)
@@ -51,6 +64,7 @@ b:set(6, 2, 1)
 b:set(6, 7, 1)
 
 local result = b:dance()
+print("hustoj 1017...")
 for _, v in ipairs(result) do
     print_array(v)
 end
