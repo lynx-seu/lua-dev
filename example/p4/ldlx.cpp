@@ -33,21 +33,24 @@ static int ldeletedlx(lua_State *L) {
     return 0;
 }
 
-static int laddrow(lua_State *L) {
+static int lset(lua_State *L) {
     lynx94::dlx_matrix *vd = (lynx94::dlx_matrix *)luax_checkobject(L, 1, kDlxName);
     luaL_argcheck(L, vd != NULL, 1, "`dlx_matrix' excepted");
-    int row = luaL_checkinteger(L, 2) - 1;
-
-    int buf[kMaxColumn] = {0};
-    int i = 0;
-    lua_pushnil(L);
-    while (lua_next(L, 3) != 0) {
-        buf[i++] = luaL_checkinteger(L, -1);
-        lua_pop(L, 1);
-    }
-
-    lynx94::dlx_matrix_addrow(vd, row, buf, i);
+    int row = luaL_checkinteger(L, 2)-1;
+    int col = luaL_checkinteger(L, 3)-1;
+    int val = luaL_checkinteger(L, 4);
+    lynx94::dlx_matrix_set(vd, row, col, val);
     return 0;
+}
+
+static int lget(lua_State *L) {
+    lynx94::dlx_matrix *vd = (lynx94::dlx_matrix *)luax_checkobject(L, 1, kDlxName);
+    luaL_argcheck(L, vd != NULL, 1, "`dlx_matrix' excepted");
+    int row = luaL_checkinteger(L, 2)-1;
+    int col = luaL_checkinteger(L, 3)-1;
+    int val = lynx94::dlx_matrix_get(vd, row, col);
+    lua_pushinteger(L, val);
+    return 1;
 }
 
 static int ldance(lua_State *L) {
@@ -78,9 +81,10 @@ int luaopen_dlx(lua_State *L) {
     };
 
     static const luaL_Reg metalib[] = {
-        {"addrow", laddrow},
-        {"dance",  ldance},
-        {"__gc",   ldeletedlx},
+        {"set",     lset},
+        {"get",     lget},
+        {"dance",   ldance},
+        {"__gc",    ldeletedlx},
         {NULL, NULL},
     };
 

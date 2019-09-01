@@ -202,36 +202,18 @@ void dlx_matrix_release(dlx_matrix *mat) {
         delete mat;
     }
 }
+void dlx_matrix_set(dlx_matrix *mat, int r, int c, int v) {
+    assert(r >= 0 && r < mat->rows);
+    assert(c >= 0 && c < mat->cols);
 
-void dlx_matrix_addrow(dlx_matrix *mat, int row, const char *str) {
-    int sz = strlen(str);
-    assert(sz <= mat->cols);
-    assert(row >= 0 && row < mat->rows);
-
-    for (int i = 0; i < mat->cols; i++) {
-        int index = row*mat->cols + i;
-        int8_t value = 0;
-
-        if (i < sz) {
-            value = (str[i] != '0');
-        }
-        mat->data[index] = value;
-    }
+    v = v == 0 ? 0 : 1;
+    mat->data[r*mat->cols + c] = v;
 }
 
-void dlx_matrix_addrow(dlx_matrix *mat, int row, int *row_set, int sz) {
-    assert(sz <= mat->cols);
-    assert(row >= 0 && row < mat->rows);
-
-    for (int i = 0; i < mat->cols; i++) {
-        int index = row*mat->cols + i;
-        int8_t value = 0;
-
-        if (i < sz) {
-            value = row_set[i];
-        }
-        mat->data[index] = value;
-    }
+int dlx_matrix_get(dlx_matrix *mat, int r, int c) {
+    assert(r >= 0 && r < mat->rows);
+    assert(c >= 0 && c < mat->cols);
+    return (int)(mat->data[r*mat->cols + c]);
 }
 
 void dlx_matrix_dance(dlx_matrix *mat, const FUNC& f) {
