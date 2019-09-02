@@ -14,7 +14,7 @@ struct data_object { //A module in the sparse matrix data structure.
     data_object()
         : L(nullptr) , R(nullptr)
         , U(nullptr) , D(nullptr)
-        , C(nullptr) , x(-1) {}
+        , C(nullptr) , x(0) {}
 
     data_object* L;                //Link to next object left.
     data_object* R;                //         "          right.
@@ -151,12 +151,15 @@ data_object *knuth_s_heuristic(data_object *root) {
     return res;
 }
 
-void dlx_search(data_object *root, int depth, int *result, const FUNC& f) {
+void dlx_search(data_object *root, int depth, int *result, int limits, const FUNC& f) {
     assert(is_root(root));
     if (root->R == root) {
+        root->x ++;
         f(result, depth);
         return;
     }
+
+    if (root->x >= limits) return;
 
     data_object *column = knuth_s_heuristic(root);
     cover(column);
@@ -165,7 +168,7 @@ void dlx_search(data_object *root, int depth, int *result, const FUNC& f) {
         for (data_object *j = r->R; j != r; j = j->R) {
             cover(j->C);
         }
-        dlx_search(root, depth+1, result, f);
+        dlx_search(root, depth+1, result, limits, f);
         for (data_object *j = r->L; j != r; j = j->L) {
             uncover(j->C);
         }
@@ -217,13 +220,13 @@ bool dlx_matrix_get(dlx_matrix *mat, int r, int c) {
     return mat->data[r*mat->cols + c];
 }
 
-void dlx_matrix_dance(dlx_matrix *mat, const FUNC& f) {
+void dlx_matrix_dance(dlx_matrix *mat, int limits, const FUNC& f) {
     assert(mat != nullptr);
     int rows = mat->rows;
     int cols = mat->cols;
     data_object *root = sparse_matrix_create(mat->data, rows, cols);
     int *result = new int[rows];
-    dlx_search(root, 0, result, f);
+    dlx_search(root, 0, result, limits, f);
     delete []result;
     sparse_matrix_release(root);
 }

@@ -56,7 +56,11 @@ static int lget(lua_State *L) {
 static int ldance(lua_State *L) {
     lynx94::dlx_matrix *vd = (lynx94::dlx_matrix *)luax_checkobject(L, 1, kDlxName);
     luaL_argcheck(L, vd != NULL, 1, "`dlx_matrix' excepted");
-    
+    int limits = 1;
+    if (lua_gettop(L) > 1) {
+        limits = luaL_checkinteger(L, 2);
+    }
+
     lua_newtable(L);
     int index = 0;
     auto f = [&](int *result, int len) {
@@ -68,7 +72,7 @@ static int ldance(lua_State *L) {
         }
         lua_rawseti(L, -2, index);
     };
-    lynx94::dlx_matrix_dance(vd, f);
+    lynx94::dlx_matrix_dance(vd, limits, f);
 
     return 1;
 }

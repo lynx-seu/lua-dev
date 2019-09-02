@@ -45,7 +45,8 @@ end
 
 
 -- TEST
-local s1 = new "800000000003600000070090200050007000000045700000100030001000068008500010090000400"
+--local s1 = new "800000000003600000070090200050007000000045700000100030001000068008500010090000400"
+local s1 = new "000000000000000000000000000000000000000000000000000000000000000000000000000000000"
 print(s1)
 
 local dlx_matrix = dlx.new(729, 324)
@@ -90,9 +91,7 @@ end
 
 local start = os.time()
 local result
-for i = 1, 10000 do
-    result = dlx_matrix:dance()
-end
+result = dlx_matrix:dance()
 print(os.difftime(os.time(),start))
 
 assert(#result == 1 and #(result[1]) == 81)
